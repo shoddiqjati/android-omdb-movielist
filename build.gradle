@@ -19,6 +19,9 @@ buildscript {
     //image
     ext.glideVersion = '4.7.1'
 
+    // DI
+    ext.daggerVersion = '2.13'
+
     repositories {
         google()
         jcenter()
