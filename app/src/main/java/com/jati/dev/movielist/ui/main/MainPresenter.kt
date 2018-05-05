@@ -1,4 +1,4 @@
-package com.jati.dev.movielist.ui.detail
+package com.jati.dev.movielist.ui.main
 
 import com.jati.dev.movielist.base.BasePresenter
 
