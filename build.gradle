@@ -2,6 +2,23 @@
 
 buildscript {
     ext.kotlin_version = '1.2.41'
+    ext.supportVersion = '27.1.1'
+    ext.constraintVersion = '1.1.0'
+
+    //network
+    ext.okHttp3Version = '3.9.1'
+    ext.retrofitVersion = '2.4.0'
+    ext.retrofitAdapter = '1.0.0'
+    ext.gsonVersion = '2.8.2'
+
+    //Rx
+    ext.rxAndroidVersion = '2.0.1'
+    ext.rxJavaVersion = '2.1.7'
+    ext.rxBindingVersion = '2.1.1'
+
+    //image
+    ext.glideVersion = '4.7.1'
+
     repositories {
         google()
         jcenter()
