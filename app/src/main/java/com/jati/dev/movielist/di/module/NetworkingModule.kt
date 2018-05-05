@@ -24,7 +24,7 @@ import javax.inject.Singleton
 @Module
 class NetworkingModule {
     private val REQUEST_TIMEOUT = 30
-    private val BASE_URL = "http://www.omdbapi.com/"
+    private val BASE_URL = "http://www.omdbapi.com"
 
     @Provides
     @Singleton
