@@ -12,4 +12,5 @@ object Constants {
     val FIRST_PAGE = "1"
     val IMDB_ID_PARAMS = "i"
     val IMDB_ID = "imdb_id"
+    val TYPE_TEXT = "text/plain"
 }
