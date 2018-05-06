@@ -9,6 +9,8 @@ import com.jati.dev.movielist.R
 import com.jati.dev.movielist.base.BaseActivity
 import com.jati.dev.movielist.model.MovieItem
 import com.jati.dev.movielist.network.ApiManager
+import com.jati.dev.movielist.utils.EndlessRecyclerViewScrollListener
+import com.jati.dev.movielist.utils.ItemDivider
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -19,6 +21,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
 
     private lateinit var searchView: SearchView
     private var searchItem: MenuItem? = null
+    private var isLoading = false
 
     private val movieList = mutableListOf<MovieItem>()
     private val movieAdapter by lazy { MovieAdapter(movieList) }
@@ -33,6 +36,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
         with(rv_movie) {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = movieAdapter
+            addItemDecoration(ItemDivider(this@MainActivity))
         }
     }
 
@@ -64,11 +68,32 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
 
     override fun showResults(movies: List<MovieItem>, page: Int) {
         if (page == 1) {
+            isLoading = false
             searchView.onActionViewCollapsed()
             searchItem?.collapseActionView()
             movieList.clear()
+            movieList.addAll(movies)
+            movieAdapter.notifyDataSetChanged()
+        } else {
+            isLoading = false
+            movieAdapter.removeLoadingFooter()
+            movieList.addAll(movies)
+            movieAdapter.notifyItemInserted(movieList.size - movies.size)
         }
-        movieList.addAll(movies)
-        movieAdapter.notifyDataSetChanged()
+
+        rv_movie.addOnScrollListener(object : EndlessRecyclerViewScrollListener(rv_movie.layoutManager as LinearLayoutManager) {
+            override fun loadMoreItems() {
+                isLoading = true
+                movieAdapter.addLoadingFooter()
+                presenter?.loadMoreMovie(page + 1)
+            }
+
+            override fun isLastPage(): Boolean {
+                return page == 4
+            }
+
+            override fun isLoading(): Boolean = isLoading
+
+        })
     }
 }

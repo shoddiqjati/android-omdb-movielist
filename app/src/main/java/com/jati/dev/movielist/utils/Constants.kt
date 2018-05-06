@@ -9,6 +9,5 @@ object Constants {
     val API_KEY_PARAMS = "apikey"
     val API_KEY = "56772e62"
     val PAGE_PARAMS = "page"
-    val PAGE_ONE = "1"
-    val PAGE_FOUR = "4"
+    val FIRST_PAGE = "1"
 }

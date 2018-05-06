@@ -15,12 +15,12 @@ class MainPresenter(private val apiManager: ApiManager, private val view: MainVi
     fun searchMovie(keyword: String) {
         query.clear()
         query[Constants.SEARCH_PARAMS] = keyword
-        query[Constants.PAGE_PARAMS] = Constants.PAGE_ONE
+        query[Constants.PAGE_PARAMS] = Constants.FIRST_PAGE
         query[Constants.API_KEY_PARAMS] = Constants.API_KEY
         compositeDisposable.add(
                 apiManager.observableMovies(query)
                         .subscribe({
-                            view.showResults(it.movieList, Constants.PAGE_ONE.toInt())
+                            view.showResults(it.movieList, Constants.FIRST_PAGE.toInt())
                         }, {})
         )
     }
