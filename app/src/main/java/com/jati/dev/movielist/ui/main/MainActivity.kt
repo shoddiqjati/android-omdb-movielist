@@ -1,6 +1,8 @@
 package com.jati.dev.movielist.ui.main
 
+import android.content.Intent
 import android.support.v4.internal.view.SupportMenuItem
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.Menu
@@ -9,9 +11,8 @@ import com.jati.dev.movielist.R
 import com.jati.dev.movielist.base.BaseActivity
 import com.jati.dev.movielist.model.MovieItem
 import com.jati.dev.movielist.network.ApiManager
-import com.jati.dev.movielist.utils.EndlessRecyclerViewScrollListener
-import com.jati.dev.movielist.utils.ItemDivider
-import com.jati.dev.movielist.utils.ProgressDialog
+import com.jati.dev.movielist.ui.detail.MovieDetailsActivity
+import com.jati.dev.movielist.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -25,9 +26,24 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
     private var isLoading = false
 
     private val movieList = mutableListOf<MovieItem>()
-    private val movieAdapter by lazy { MovieAdapter(movieList) }
+    private val movieAdapter by lazy {
+        MovieAdapter(movieList, object : RecyclerViewItemClickListener {
+            override fun onItemClicked(item: MovieItem) {
+                val detailIntent = Intent(this@MainActivity, MovieDetailsActivity::class.java)
+                detailIntent.putExtra(Constants.IMDB_ID, item.imdbId)
+                startActivity(detailIntent)
+            }
+        })
+    }
     private val progressDialog by lazy {
         ProgressDialog(this@MainActivity, getString(R.string.searching_movie))
+    }
+
+    private val alertDialog: AlertDialog by lazy {
+        AlertDialog.Builder(this@MainActivity)
+                .setPositiveButton(R.string.ok) { dialog, _ ->
+                    dialog.dismiss()
+                }.create()
     }
 
     override fun onSetupLayout() {
@@ -37,6 +53,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
     }
 
     override fun onViewReady() {
+        initUiState(true)
         with(rv_movie) {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = movieAdapter
@@ -70,7 +87,18 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
         })
     }
 
+    private fun initUiState(isFirst: Boolean) {
+        if (isFirst) {
+            lin_search.show()
+            rv_movie.hide()
+        } else {
+            lin_search.hide()
+            rv_movie.show()
+        }
+    }
+
     override fun showResults(movies: List<MovieItem>, page: Int, isFourPage: Boolean) {
+        initUiState(false)
         if (page == 1) {
             isLoading = false
             searchView.onActionViewCollapsed()
@@ -105,5 +133,12 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
 
     override fun searchingMovie(isSearching: Boolean) {
         if (isSearching) progressDialog.show() else progressDialog.dismiss()
+    }
+
+    override fun showError(message: String?) {
+        message?.let {
+            alertDialog.setMessage(message)
+            alertDialog.show()
+        }
     }
 }

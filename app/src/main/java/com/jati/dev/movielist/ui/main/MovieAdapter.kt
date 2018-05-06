@@ -8,13 +8,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.jati.dev.movielist.R
 import com.jati.dev.movielist.model.MovieItem
+import com.jati.dev.movielist.utils.RecyclerViewItemClickListener
 import kotlinx.android.synthetic.main.item_movie.view.*
 
 /**
  * Created by jati on 05/05/18
  */
 
-class MovieAdapter(val data: MutableList<MovieItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MovieAdapter(val data: MutableList<MovieItem>, val clickListener: RecyclerViewItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val ITEM = 0
     private val LOADING = 1
@@ -50,10 +51,15 @@ class MovieAdapter(val data: MutableList<MovieItem>) : RecyclerView.Adapter<Recy
             itemView.tv_year.text = item.year
             itemView.tv_type.text = item.type
 
+
             Glide.with(itemView)
                     .load(item.poster)
                     .apply(RequestOptions().placeholder(R.drawable.ic_image).error(R.drawable.ic_broken_image))
                     .into(itemView.iv_poster)
+
+            itemView.container.setOnClickListener {
+                clickListener.onItemClicked(item)
+            }
         }
     }
 

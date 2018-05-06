@@ -9,4 +9,5 @@ import com.jati.dev.movielist.model.MovieItem
 interface MainView {
     fun showResults(movies: List<MovieItem>, page: Int, isFourPage: Boolean)
     fun searchingMovie(isSearching: Boolean)
+    fun showError(message: String?)
 }

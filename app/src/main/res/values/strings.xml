@@ -5,4 +5,14 @@
     <string name="movie_poster">Movie Poster</string>
     <string name="load_more_items">Load More Items</string>
     <string name="searching_movie">Searching Movie</string>
+    <string name="share">Share</string>
+    <string name="production">Production</string>
+    <string name="director">Director</string>
+    <string name="plot">Plot</string>
+    <string name="actors">Actors</string>
+    <string name="writer">Writer</string>
+    <string name="ok">Ok</string>
+    <string name="try_again">Try Again</string>
+    <string name="getting_movie_details">Getting Movie Details</string>
+    <string name="search_movie_title">Search Movie Title</string>
 </resources>

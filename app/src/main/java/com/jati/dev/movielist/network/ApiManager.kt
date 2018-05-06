@@ -12,4 +12,9 @@ class ApiManager(private val services: ApiServices) {
             .searchMovies(query)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+
+    fun observableMovieDetails(query: HashMap<String, String>) = services
+            .getMovieDetails(query)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 }

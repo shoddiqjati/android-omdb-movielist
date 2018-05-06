@@ -15,4 +15,6 @@
     <dimen name="dimen_64dp">64dp</dimen>
     <dimen name="dimen_24dp">24dp</dimen>
     <dimen name="dimen_48dp">48dp</dimen>
+    <dimen name="dimen_256dp">256dp</dimen>
+    <dimen name="font_14sp">14sp</dimen>
 </resources>

@@ -3,6 +3,8 @@ package com.jati.dev.movielist.ui.main
 import com.jati.dev.movielist.base.BasePresenter
 import com.jati.dev.movielist.network.ApiManager
 import com.jati.dev.movielist.utils.Constants
+import com.jati.dev.movielist.utils.getErrorDescription
+import com.jati.dev.movielist.utils.handleThrowable
 
 /**
  * Created by jati on 05/05/18
@@ -22,9 +24,14 @@ class MainPresenter(private val apiManager: ApiManager, private val view: MainVi
                 apiManager.observableMovies(query)
                         .subscribe({
                             view.searchingMovie(false)
-                            view.showResults(it.movieList, Constants.FIRST_PAGE.toInt(), (it.total.toInt() >= 40))
+                            if (it.isSuccessful) {
+                                it.body()?.let { view.showResults(it.movieList, Constants.FIRST_PAGE.toInt(), (it.total.toInt() >= 40)) }
+                            } else {
+                                it.errorBody()?.string()?.let { view.showError(getErrorDescription(it).error) }
+                            }
                         }, {
                             view.searchingMovie(false)
+                            view.showError(handleThrowable(it))
                         })
         )
     }
@@ -34,8 +41,12 @@ class MainPresenter(private val apiManager: ApiManager, private val view: MainVi
         compositeDisposable.add(
                 apiManager.observableMovies(query)
                         .subscribe({
-                            view.showResults(it.movieList, page, (it.total.toInt() >= 40))
-                        }, {})
+                            if (it.isSuccessful) {
+                                it.body()?.let { view.showResults(it.movieList, page, (it.total.toInt() >= 40)) }
+                            } else {
+                                it.errorBody()?.string()?.let { view.showError(getErrorDescription(it).error) }
+                            }
+                        }, { view.showError(handleThrowable(it)) })
         )
     }
 }

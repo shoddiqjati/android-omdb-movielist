@@ -10,4 +10,6 @@ object Constants {
     val API_KEY = "56772e62"
     val PAGE_PARAMS = "page"
     val FIRST_PAGE = "1"
+    val IMDB_ID_PARAMS = "i"
+    val IMDB_ID = "imdb_id"
 }
