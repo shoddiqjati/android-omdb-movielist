@@ -11,6 +11,7 @@ import com.jati.dev.movielist.model.MovieItem
 import com.jati.dev.movielist.network.ApiManager
 import com.jati.dev.movielist.utils.EndlessRecyclerViewScrollListener
 import com.jati.dev.movielist.utils.ItemDivider
+import com.jati.dev.movielist.utils.ProgressDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -25,6 +26,9 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
 
     private val movieList = mutableListOf<MovieItem>()
     private val movieAdapter by lazy { MovieAdapter(movieList) }
+    private val progressDialog by lazy {
+        ProgressDialog(this@MainActivity, getString(R.string.searching_movie))
+    }
 
     override fun onSetupLayout() {
         setContentView(R.layout.activity_main)
@@ -66,7 +70,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
         })
     }
 
-    override fun showResults(movies: List<MovieItem>, page: Int) {
+    override fun showResults(movies: List<MovieItem>, page: Int, isFourPage: Boolean) {
         if (page == 1) {
             isLoading = false
             searchView.onActionViewCollapsed()
@@ -81,19 +85,25 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView {
             movieAdapter.notifyItemInserted(movieList.size - movies.size)
         }
 
-        rv_movie.addOnScrollListener(object : EndlessRecyclerViewScrollListener(rv_movie.layoutManager as LinearLayoutManager) {
-            override fun loadMoreItems() {
-                isLoading = true
-                movieAdapter.addLoadingFooter()
-                presenter?.loadMoreMovie(page + 1)
-            }
+        if (isFourPage) {
+            rv_movie.addOnScrollListener(object : EndlessRecyclerViewScrollListener(rv_movie.layoutManager as LinearLayoutManager) {
+                override fun loadMoreItems() {
+                    isLoading = true
+                    movieAdapter.addLoadingFooter()
+                    presenter?.loadMoreMovie(page + 1)
+                }
 
-            override fun isLastPage(): Boolean {
-                return page == 4
-            }
+                override fun isLastPage(): Boolean {
+                    return page == 4
+                }
 
-            override fun isLoading(): Boolean = isLoading
+                override fun isLoading(): Boolean = isLoading
 
-        })
+            })
+        }
+    }
+
+    override fun searchingMovie(isSearching: Boolean) {
+        if (isSearching) progressDialog.show() else progressDialog.dismiss()
     }
 }

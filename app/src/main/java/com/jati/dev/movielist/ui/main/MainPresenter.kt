@@ -13,6 +13,7 @@ class MainPresenter(private val apiManager: ApiManager, private val view: MainVi
     private val query = HashMap<String, String>()
 
     fun searchMovie(keyword: String) {
+        view.searchingMovie(true)
         query.clear()
         query[Constants.SEARCH_PARAMS] = keyword
         query[Constants.PAGE_PARAMS] = Constants.FIRST_PAGE
@@ -20,8 +21,11 @@ class MainPresenter(private val apiManager: ApiManager, private val view: MainVi
         compositeDisposable.add(
                 apiManager.observableMovies(query)
                         .subscribe({
-                            view.showResults(it.movieList, Constants.FIRST_PAGE.toInt())
-                        }, {})
+                            view.searchingMovie(false)
+                            view.showResults(it.movieList, Constants.FIRST_PAGE.toInt(), (it.total.toInt() >= 40))
+                        }, {
+                            view.searchingMovie(false)
+                        })
         )
     }
 
@@ -30,7 +34,7 @@ class MainPresenter(private val apiManager: ApiManager, private val view: MainVi
         compositeDisposable.add(
                 apiManager.observableMovies(query)
                         .subscribe({
-                            view.showResults(it.movieList, page)
+                            view.showResults(it.movieList, page, (it.total.toInt() >= 40))
                         }, {})
         )
     }
